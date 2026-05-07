@@ -1,0 +1,42 @@
+{
+  "name": "image-compressor",
+  "version": "1.1.0",
+  "main": "main.js",
+  "productName": "图片压缩工具",
+  "author": "SamShen",
+  "description": "图片压缩工具",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "browser-image-compression": "^2.0.2"
+  },
+  "devDependencies": {
+    "electron": "30.5.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.imagecompressor.app",
+    "productName": "图片压缩工具",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/img_com.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "图片压缩工具"
+    }
+  }
+}

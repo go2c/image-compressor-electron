@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>图片压缩工具</title>
+  <!-- 使用本地图片压缩库 -->
+  <script src="./node_modules/browser-image-compression/dist/browser-image-compression.js"></script>
+  <!-- HeroUI 设计系统 Token 定义 -->
+  <style>
+    :root {
+      /* HeroUI 核心色彩系统 */
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-primary-active: #1e40af;
+      --color-success: #10b981;
+      --color-success-hover: #059669;
+      --color-success-active: #047857;
+      --color-neutral-50: #f8fafc;
+      --color-neutral-100: #f1f5f9;
+      --color-neutral-200: #e2e8f0;
+      --color-neutral-300: #cbd5e1;
+      --color-neutral-400: #94a3b8;
+      --color-neutral-500: #64748b;
+      --color-neutral-600: #475569;
+      --color-neutral-700: #334155;
+      --color-neutral-800: #1e293b;
+      --color-neutral-900: #0f172a;
+      --color-white: #ffffff;
+
+      /* HeroUI 圆角系统 */
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-2xl: 20px;
+
+      /* HeroUI 阴影系统 */
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+      /* HeroUI 间距系统 */
+      --spacing-1: 4px;
+      --spacing-2: 8px;
+      --spacing-3: 12px;
+      --spacing-4: 16px;
+      --spacing-5: 20px;
+      --spacing-6: 24px;
+      --spacing-8: 32px;
+      --spacing-10: 40px;
+
+      /* 字体 */
+      --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    /* 全局重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-family);
+    }
+
+    body {
+      background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+      color: var(--color-neutral-800);
+      padding: var(--spacing-6);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    
+    /* 头部区域 */
+    .header {
+      text-align: center;
+      margin-bottom: var(--spacing-6);
+    }
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-neutral-800);
+      margin-bottom: 4px;
+    }
+    .header p {
+      font-size: 14px;
+      color: var(--color-neutral-500);
+    }
+
+    /* HeroUI 按钮样式 */
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-3) var(--spacing-5);
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    /* 主按钮 */
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-primary:hover {
+      background-color: var(--color-primary-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      background-color: var(--color-primary-active);
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* 次按钮（成功色） */
+    .btn-secondary {
+      background-color: var(--color-success);
+      color: var(--color-white);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-secondary:hover {
+      background-color: var(--color-success-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+    .btn-secondary:active {
+      background-color: var(--color-success-active);
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* 按钮禁用态 */
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* HeroUI 输入框样式 */
+    input[type="number"] {
+      width: 80px;
+      padding: var(--spacing-2) var(--spacing-3);
+      font-size: 14px;
+      color: var(--color-neutral-800);
+      background-color: var(--color-white);
+      border: 1px solid var(--color-neutral-200);
+      border-radius: var(--radius-md);
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    input[type="number"]:hover {
+      border-color: var(--color-neutral-300);
+    }
+    input[type="number"]:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+    }
+
+    /* HeroUI 复选框样式 */
+    .checkbox-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      cursor: pointer;
+      user-select: none;
+    }
+    .checkbox-wrapper input[type="checkbox"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid var(--color-neutral-300);
+      border-radius: var(--radius-sm);
+      background-color: var(--color-white);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+    .checkbox-wrapper input[type="checkbox"]:checked {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .checkbox-wrapper input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1px;
+      width: 5px;
+      height: 9px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .checkbox-wrapper input[type="checkbox"]:hover {
+      border-color: var(--color-primary);
+    }
+    .checkbox-wrapper label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-neutral-700);
+      cursor: pointer;
+    }
+
+    /* 预览卡片容器 */
+    .preview-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-6);
+      margin: var(--spacing-6) 0;
+    }
+    .preview-card {
+      background-color: var(--color-white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+      border: 1px solid var(--color-neutral-100);
+    }
+    .preview-card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-neutral-200);
+    }
+    .preview-img-wrapper {
+      width: 100%;
+      height: 360px;
+      background: linear-gradient(135deg, var(--color-neutral-50) 0%, var(--color-neutral-100) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-bottom: 1px solid var(--color-neutral-100);
+    }
+    .preview-img-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    /* 占位图样式 */
+    .placeholder-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+      color: var(--color-neutral-400);
+      transition: all 0.3s ease;
+      display: block;
+    }
+    .preview-card:hover .placeholder-icon {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+    .preview-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--color-neutral-400);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+    }
+    .preview-empty-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--color-neutral-500);
+    }
+    .preview-empty-desc {
+      font-size: 12px;
+      color: var(--color-neutral-400);
+    }
+    .preview-info {
+      padding: var(--spacing-3) var(--spacing-4);
+      background-color: var(--color-neutral-50);
+      border-top: 1px solid var(--color-neutral-100);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-neutral-600);
+    }
+    
+    /* 卡片标签 */
+    .card-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 10px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-neutral-600);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* 图片操作按钮组 */
+    .img-actions {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .preview-card:hover .img-actions {
+      opacity: 1;
+    }
+    .img-action-btn {
+      border-radius: var(--radius-md);
+      background-color: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--color-neutral-200);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      width: 60px;
+      height: 36px;
+    }
+    .img-action-btn:hover {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      transform: scale(1.1);
+    }
+    .img-action-btn:hover svg {
+      stroke: white;
+    }
+    .img-action-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: #64748b;
+      transition: stroke 0.2s ease;
+    }
+    .img-action-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .img-action-btn:disabled:hover {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-color: var(--color-neutral-200);
+      transform: none;
+    }
+    .img-action-btn:disabled:hover svg {
+      stroke: #64748b;
+    }
+    
+    /* 拖拽区域 */
+    .drop-zone {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(37, 99, 235, 0.1);
+      border: 2px dashed var(--color-primary);
+      border-radius: var(--radius-lg);
+      z-index: 10;
+      cursor: pointer;
+    }
+    .drop-zone.active {
+      display: flex;
+    }
+    .drop-zone-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      color: var(--color-primary);
+    }
+    .drop-zone-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+    .drop-zone-hint {
+      font-size: 12px;
+      color: var(--color-neutral-500);
+      margin-top: 4px;
+    }
+    
+    /* 文件选择触发区域 */
+    .select-trigger {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    /* 控制面板 */
+    .control-panel {
+      background-color: var(--color-white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      padding: var(--spacing-5);
+      margin-bottom: var(--spacing-6);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-5);
+    }
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+    }
+    .control-item label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-neutral-700);
+      white-space: nowrap;
+    }
+
+    /* 底部操作栏 */
+    .action-bar {
+      display: flex;
+      gap: var(--spacing-4);
+    }
+    .action-bar button {
+      flex: 1;
+      font-size: 15px;
+      padding: var(--spacing-3) var(--spacing-6);
+    }
+
+    /* Toast 通知（HeroUI风格） */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 60px;
+      transform: translateX(-50%) translateY(20px);
+      background-color: var(--color-neutral-900);
+      color: var(--color-white);
+      padding: var(--spacing-3) var(--spacing-6);
+      border-radius: var(--radius-lg);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-xl);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 9999;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 响应式适配 */
+    @media (max-width: 860px) {
+      .preview-container {
+        grid-template-columns: 1fr;
+      }
+      .control-panel {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 头部 -->
+  <div class="header">
+    <h1>图片压缩工具</h1>
+    <p>快速压缩图片，轻松复制保存</p>
+  </div>
+  
+  <!-- 顶部粘贴按钮 -->
+  <button id="pasteBtn" class="btn-primary" style="width: 100%; height: 46px; font-size: 15px;">
+    📋 从剪贴板获取图片
+  </button>
+
+  <!-- 预览区 -->
+  <div class="preview-container">
+    <!-- 原图预览卡片 -->
+    <div class="preview-card">
+      <div class="preview-img-wrapper" id="originalWrapper">
+        <span class="card-label">原图</span>
+        <svg class="placeholder-icon" id="originalPlaceholder" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="16" width="64" height="48" rx="6" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="26" cy="34" r="6" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 56 L28 42 L38 52 L52 38 L68 54 L68 60 C68 62.2 66.2 64 64 64 L16 64 C13.8 64 12 62.2 12 60 L12 56Z" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+        <div class="preview-empty" id="originalEmpty">
+          <span class="preview-empty-title">原图预览</span>
+          <span class="preview-empty-desc">点击选择或拖入图片</span>
+        </div>
+        <img id="originalImg" alt="原图预览" style="display: none;">
+        
+        <!-- 拖拽提示层 -->
+        <div class="drop-zone" id="dropZone">
+          <svg class="drop-zone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span class="drop-zone-text">释放图片</span>
+          <span class="drop-zone-hint">或点击选择文件</span>
+        </div>
+        
+        <!-- 点击选择文件（隐藏） -->
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+      </div>
+      <div id="originalInfo" class="preview-info">--</div>
+    </div>
+
+    <!-- 压缩图预览卡片 -->
+    <div class="preview-card">
+      <div class="preview-img-wrapper">
+        <span class="card-label">压缩后</span>
+        <div class="img-actions" id="compressedActions">
+          <button id="copyBtn" class="img-action-btn" disabled title="复制到剪贴板">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+          <button id="saveBtn" class="img-action-btn" disabled title="保存到本地">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </button>
+        </div>
+        <svg class="placeholder-icon" id="compressedPlaceholder" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="12" width="44" height="44" rx="4" stroke="currentColor" stroke-width="2" fill="none"/>
+          <rect x="30" y="24" width="44" height="44" rx="4" stroke="currentColor" stroke-width="2" fill="none"/>
+          <path d="M20 40 L35 28 L45 36 L55 26 L65 36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="preview-empty" id="compressedEmpty">
+          <span class="preview-empty-title">压缩图预览</span>
+          <span class="preview-empty-desc">设置参数后点击压缩</span>
+        </div>
+        <img id="compressedImg" alt="压缩图预览" style="display: none;">
+      </div>
+      <div id="compressedInfo" class="preview-info">--</div>
+    </div>
+  </div>
+
+  <!-- 压缩参数控制面板 -->
+  <div class="control-panel">
+    <div class="control-item">
+      <label for="quality">压缩质量 (0-100)</label>
+      <input type="number" id="quality" value="85" min="0" max="100">
+    </div>
+
+    <div class="control-item">
+      <label for="width">宽度 (px)</label>
+      <input type="number" id="width" min="1">
+    </div>
+
+    <div class="control-item">
+      <label for="height">高度 (px)</label>
+      <input type="number" id="height" min="1">
+    </div>
+
+    <div class="checkbox-wrapper">
+      <input type="checkbox" id="keepRatio" checked>
+      <label for="keepRatio">保持纵横比</label>
+    </div>
+
+    <button id="compressBtn" class="btn-primary" style="margin-left: auto;">
+      🔄 开始压缩
+    </button>
+  </div>
+
+  <!-- Toast 通知 -->
+  <div class="toast" id="toast"></div>
+
+  <!-- 功能逻辑脚本 -->
+  <script src="renderer.js"></script>
+</body>
+</html>
