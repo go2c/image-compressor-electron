@@ -26,7 +26,7 @@
 
 📂 项目结构
 
-
+```
 image-compressor-electron/
 ├── main.js            # 主进程：创建窗口、处理原生事件
 ├── preload.js         # 预加载脚本：安全地暴露 IPC 接口给渲染进程
@@ -34,7 +34,7 @@ image-compressor-electron/
 ├── index.html         # 应用程序界面
 ├── package.json       # 项目配置和依赖管理
 └── README.md          # 项目说明文档
-
+```
 
 🚀 快速开始
 
