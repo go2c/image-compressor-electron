@@ -49,25 +49,31 @@ image-compressor-electron/
 安装与运行
 
 1.  克隆仓库
+    ```bash
     git clone https://github.com/go2c/image-compressor-electron.git
     cd image-compressor-electron
-    
+    ```
 2.  安装依赖
+    ```bash
     npm install
+    ```
     
-3.  启动开发服务器
+3.  启动开发服务器  
+    ```bash
     npm start
+    ```
     
     此时会弹出一个 Electron 窗口，即为应用界面。
 
 📦 打包构建
 
-本项目使用 electron-builder 进行打包。
+本项目使用 electron-builder 进行打包，执行以下命令生成 Windows 安装包 (.exe)   
 
-•   生成 Windows 安装包 (.exe)
-    npm run dist    
+```bash
+npm run dist   
+```
 
-    打包完成后，可在 dist 目录下找到生成的安装文件。
+> ⚠️ 打包完成后，可在 dist 目录下找到生成的安装文件。
 
 🙏 致谢
 
