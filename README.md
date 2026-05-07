@@ -1,14 +1,3 @@
-好的，基于你提供的 GitHub 仓库文件结构（main.js, preload.js, renderer.js, index.html, package.json），我为你编写了一份标准、专业且可直接使用的 README 文档。
-
-这份 README 采用了目前 GitHub 上 Electron 项目最通用的格式。
-
-*
-
-Image Compressor Electron
-
-https://img.shields.io/badge/Electron-30.5.1-blue.svg](https://www.electronjs.org/)
-https://img.shields.io/badge/platform-Windows%20|x64-red.svg]()
-
 一个基于 Electron 构建的跨平台桌面端图片压缩工具。该项目旨在提供一个轻量级、易用的 GUI 界面，帮助用户快速压缩 PNG、JPG、WebP 等格式的图片，有效减小文件体积，同时尽可能保持图片质量。
 
 📸 功能特性
@@ -76,31 +65,11 @@ image-compressor-electron/
 本项目使用 electron-builder 进行打包。
 
 •   生成 Windows 安装包 (.exe)
-    npm run dist
-    
+    npm run dist    
 
     打包完成后，可在 dist 目录下找到生成的安装文件。
-
-🤝 贡献指南
-
-欢迎提交 Pull Request 或 Issue 来帮助改进这个项目。
-
-1.  Fork 本仓库
-2.  创建你的特性分支 (git checkout -b feature/AmazingFeature)
-3.  提交你的更改 (git commit -m 'Add some AmazingFeature')
-4.  推送到分支 (git push origin feature/AmazingFeature)
-5.  开启一个 Pull Request
-
-📄 开源协议
-
-本项目基于 MIT License 开源，详情请参阅 LICENSE 文件（若有）。
 
 🙏 致谢
 
 •   感谢 Electron 团队提供的优秀框架。
-
 •   感谢 browser-image-compression 提供的核心压缩能力。
-
-*
-
-注：如果你需要我根据你实际的界面截图或具体的压缩算法细节来进一步润色 README 中的“功能特性”或“使用说明”部分，请随时告诉我。
